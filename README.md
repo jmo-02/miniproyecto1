@@ -96,14 +96,14 @@ bash
 git clone <repository-url>
 Sincronizar dependencias Gradle:
 ```
-```
 // Dependencias principales en build.gradle
 implementation "androidx.room:room-runtime:2.5.0"
 implementation "androidx.biometric:biometric:1.1.0"
 implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0"
-Configurar permisos en AndroidManifest.xml:
 ```
 ```xml
+Configurar permisos en AndroidManifest.xml:
+
 <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 Historias de Usuario Implementadas
 HU 1.0: Creación Widget app Inventory
