@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/homeInventoryFragment">
 
-    <!-- Home Inventory -->
+    <!-- 🏠 Home Inventory -->
     <fragment
         android:id="@+id/homeInventoryFragment"
         android:name="com.example.miniproyecto1.view.fragment.HomeInventoryFragment"
@@ -25,7 +25,7 @@
             app:destination="@id/loginFragment" />
     </fragment>
 
-    <!-- Add Item -->
+    <!-- ➕ Agregar Producto -->
     <fragment
         android:id="@+id/addItemFragment"
         android:name="com.example.miniproyecto1.view.fragment.AddItemFragment"
@@ -36,14 +36,14 @@
             app:destination="@id/homeInventoryFragment" />
     </fragment>
 
-    <!-- Details Item -->
+    <!-- 🔍 Detalle de producto -->
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.miniproyecto1.view.fragment.ItemDetailsFragment"
         android:label="fragment_item_details"
         tools:layout="@layout/fragment_item_details">
 
-        <!--️ Argumento que recibe el código del producto -->
+        <!-- ⚙️ Argumento que recibe el código del producto -->
         <argument
             android:name="code"
             app:argType="integer" />
@@ -53,7 +53,7 @@
             app:destination="@id/itemEditFragment" />
     </fragment>
 
-    <!-- Edit item -->
+    <!-- ✏️ Editar producto -->
     <fragment
         android:id="@+id/itemEditFragment"
         android:name="com.example.miniproyecto1.view.fragment.ItemEditFragment"
@@ -64,10 +64,10 @@
             app:destination="@id/homeInventoryFragment" />
     </fragment>
 
-    <!-- Login -->
+    <!-- 🔐 Login -->
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.miniproyecto1.view.fragment.LoginFragment"
+        android:name="com.example.miniproyecto1.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
