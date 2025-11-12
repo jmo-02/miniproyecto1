@@ -2,16 +2,18 @@ package com.example.miniproyecto1.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Index
 
-
-@Entity(tableName = "inventory")
+@Entity(
+    tableName = "inventory",
+    indices = [Index(value = ["code"], unique = true)]
+)
 data class Inventory(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-//    val codigo: Int,
+
+    val code: Int,
     val name: String,
-    val price: Double,
+    val price: Int,
     val quantity: Int
 )
-
-
