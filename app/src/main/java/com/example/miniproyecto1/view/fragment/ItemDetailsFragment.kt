@@ -1,7 +1,5 @@
 package com.example.miniproyecto1.view.fragment
 
-import android.app.AlertDialog
-import android.icu.text.NumberFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.miniproyecto1.R
 import com.example.miniproyecto1.databinding.FragmentItemDetailsBinding
-import com.example.miniproyecto1.model.Inventory
 import com.example.miniproyecto1.viewmodel.InventoryViewModel
+import java.text.NumberFormat
 import java.util.Locale
 
 class ItemDetailsFragment : Fragment() {
@@ -35,78 +33,103 @@ class ItemDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productCode = arguments?.getInt("code") ?: -1
+
+        recibirCodigoProducto()
 
         if (productCode == -1) {
-            Toast.makeText(requireContext(), "Error: Producto no encontrado", Toast.LENGTH_SHORT).show()
-            findNavController().navigateUp()
+            mostrarErrorProductoNoEncontrado()
             return
         }
 
-        setupToolbar()
-        setupButtons()
-        observeProduct()
-        handleBackButton()
+        configurarInterfazUsuario()
+        observarViewModel()
+        configurarBotonAtras()
     }
 
-    private fun setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+    private fun recibirCodigoProducto() {
+        productCode = arguments?.getInt("code") ?: -1
     }
 
-    private fun setupButtons() {
-        binding.btnDelete.setOnClickListener { confirmDelete() }
-        binding.fabEdit.setOnClickListener {
-            val bundle = Bundle().apply { putInt("code", productCode) }
-            findNavController().navigate(R.id.action_itemDetailsFragment_to_itemEditFragment, bundle)
-        }
+    private fun mostrarErrorProductoNoEncontrado() {
+        Toast.makeText(requireContext(), "Error: Producto no encontrado", Toast.LENGTH_SHORT).show()
+        findNavController().navigateUp()
     }
 
-    private fun observeProduct() {
-        inventoryViewModel.listInventory.observe(viewLifecycleOwner) { list ->
-            val product = list.find { it.code == productCode }
-            product?.let { showProductDetails(it) }
+    private fun configurarInterfazUsuario() {
+        binding.toolbar.setNavigationOnClickListener { regresarAListaProductos() }
+        binding.btnDelete.setOnClickListener { mostrarDialogoConfirmacionEliminar() }
+        binding.fabEdit.setOnClickListener { navegarAEdicionProducto() }
+    }
+
+    private fun observarViewModel() {
+        inventoryViewModel.listInventory.observe(viewLifecycleOwner) { listaProductos ->
+            buscarYMostrarProducto(listaProductos)
         }
         inventoryViewModel.getListInventory()
     }
 
-    private fun showProductDetails(product: Inventory) {
-        val formatoColombiano = NumberFormat.getInstance(Locale.forLanguageTag("es-CO")).apply {
+    private fun buscarYMostrarProducto(listaProductos: MutableList<com.example.miniproyecto1.model.Inventory>) {
+        val producto = listaProductos.find { it.code == productCode }
+        if (producto != null) mostrarDatosProducto(producto)
+        else mostrarErrorProductoNoEncontrado()
+    }
+
+    private fun mostrarDatosProducto(producto: com.example.miniproyecto1.model.Inventory) {
+        val totalProducto = producto.price * producto.quantity
+
+        // 🔹 Formato de número colombiano
+        val formatoColombiano = NumberFormat.getInstance(Locale("es", "CO")).apply {
             minimumFractionDigits = 2
             maximumFractionDigits = 2
         }
 
-        val precioFormateado = "$ ${formatoColombiano.format(product.price)}"
-        val totalFormateado = "$ ${formatoColombiano.format(product.price * product.quantity)}"
+        val precioFormateado = formatoColombiano.format(producto.price)
+        val totalFormateado = formatoColombiano.format(totalProducto)
 
-        binding.tvName.text = product.name
-        binding.tvPrice.text = precioFormateado
-        binding.tvQuantity.text = product.quantity.toString()
-        binding.tvTotal.text = totalFormateado
-
-        binding.toolbar.title = product.name
+        // 🔹 Asignar a las vistas
+        binding.tvNameValue.text = producto.name
+        binding.tvPriceValue.text = "$ $precioFormateado"
+        binding.tvQuantityValue.text = producto.quantity.toString()
+        binding.tvTotalValue.text = "$ $totalFormateado"
     }
 
-    private fun confirmDelete() {
-        val product = inventoryViewModel.listInventory.value?.find { it.code == productCode }
-        if (product != null) {
-            AlertDialog.Builder(requireContext())
+    private fun mostrarDialogoConfirmacionEliminar() {
+        val productoEliminar = obtenerProductoActual()
+        if (productoEliminar != null) {
+            android.app.AlertDialog.Builder(requireContext())
                 .setTitle("Confirmar eliminación")
-                .setMessage("¿Deseas eliminar ${product.name}?")
-                .setPositiveButton("Sí") { _, _ ->
-                    inventoryViewModel.deleteInventory(product)
-                    Toast.makeText(requireContext(), "${product.name} eliminado", Toast.LENGTH_SHORT).show()
-                    findNavController().navigateUp()
-                }
+                .setMessage("¿Estás seguro de que deseas eliminar ${productoEliminar.name}?")
+                .setPositiveButton("Sí") { _, _ -> eliminarProducto(productoEliminar) }
                 .setNegativeButton("No", null)
                 .show()
+        } else {
+            Toast.makeText(requireContext(), "Error: Producto no encontrado", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun handleBackButton() {
+    private fun obtenerProductoActual(): com.example.miniproyecto1.model.Inventory? {
+        val listaActual = inventoryViewModel.listInventory.value
+        return listaActual?.find { it.code == productCode }
+    }
+
+    private fun eliminarProducto(producto: com.example.miniproyecto1.model.Inventory) {
+        inventoryViewModel.deleteInventory(producto)
+        Toast.makeText(requireContext(), "${producto.name} eliminado", Toast.LENGTH_SHORT).show()
+        regresarAListaProductos()
+    }
+
+    private fun navegarAEdicionProducto() {
+        val bundle = Bundle().apply { putInt("code", productCode) }
+        findNavController().navigate(R.id.action_itemDetailsFragment_to_itemEditFragment, bundle)
+    }
+
+    private fun regresarAListaProductos() {
+        findNavController().navigateUp()
+    }
+
+    private fun configurarBotonAtras() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
+            regresarAListaProductos()
         }
     }
 }
