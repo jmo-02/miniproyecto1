@@ -87,4 +87,6 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     fun totalProducto(precio: Double, cantidad: Int): Double {
         return precio * cantidad
     }
+
+    companion object
 }
