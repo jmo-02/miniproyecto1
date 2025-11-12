@@ -102,5 +102,5 @@
         android:layout_toEndOf="@id/inv_manage_text"
         android:contentDescription="@string/inv_manage_icon_desc"
         android:src="@drawable/ic_inventory_manage"
-        android:tint="@color/orange_button" />
+        android:textColor="@color/orange_button" />
 </RelativeLayout>
