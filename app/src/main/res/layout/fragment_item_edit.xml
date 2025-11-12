@@ -17,7 +17,7 @@
             android:background="@color/gray_toolbar"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/white"
-            app:title="Editar producto"
+            app:title="Editar produto"
             app:titleTextColor="@color/white"
             android:elevation="5dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:hint="Id"
+            android:hint="Id:"
             android:textColorHint="@color/white"
             app:hintTextColor="@color/white"
             app:boxStrokeColor="@color/box_stroke_white"
@@ -154,7 +154,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Botón editar -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
             android:textAllCaps="false"
             android:textStyle="bold"
             android:enabled="false"
-            android:backgroundTint="@color/orange_button"
+            app:backgroundTint="@color/orange_button"
             android:textColor="@color/button_text_color"
             app:cornerRadius="20dp"
             android:paddingVertical="12dp"

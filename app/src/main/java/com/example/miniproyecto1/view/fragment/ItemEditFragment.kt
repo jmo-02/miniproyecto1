@@ -3,6 +3,7 @@ package com.example.miniproyecto1.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
+import android.text.method.DigitsKeyListener
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -71,6 +72,10 @@ class ItemEditFragment : Fragment() {
         binding.etPrice.filters = arrayOf(InputFilter.LengthFilter(20))
         binding.etQuantity.filters = arrayOf(InputFilter.LengthFilter(4))
 
+        // Asegurar que solo se permitan dígitos en precio y cantidad
+        binding.etPrice.keyListener = DigitsKeyListener.getInstance("0123456789")
+        binding.etQuantity.keyListener = DigitsKeyListener.getInstance("0123456789")
+
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -94,7 +99,12 @@ class ItemEditFragment : Fragment() {
         val price = binding.etPrice.text?.toString()?.trim() ?: ""
         val quantity = binding.etQuantity.text?.toString()?.trim() ?: ""
 
-        binding.btnEdit.isEnabled = name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()
+        // Validaciones adicionales: longitud y solo dígitos para price/quantity
+        val nameValid = name.isNotEmpty() && name.length <= 40
+        val priceValid = price.isNotEmpty() && price.matches(Regex("^[0-9]{1,20}$"))
+        val quantityValid = quantity.isNotEmpty() && quantity.matches(Regex("^[0-9]{1,4}$"))
+
+        binding.btnEdit.isEnabled = nameValid && priceValid && quantityValid
     }
 
     private fun observarViewModel() {
@@ -132,12 +142,14 @@ class ItemEditFragment : Fragment() {
         val nuevaCantidadStr = binding.etQuantity.text.toString().trim()
 
         // Validaciones adicionales: números
-        val nuevoPrecio = try { nuevoPrecioStr.toInt() } catch (e: NumberFormatException) {
+        val nuevoPrecio = nuevoPrecioStr.toIntOrNull()
+        if (nuevoPrecio == null) {
             Toast.makeText(requireContext(), "Precio inválido", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val nuevaCantidad = try { nuevaCantidadStr.toInt() } catch (e: NumberFormatException) {
+        val nuevaCantidad = nuevaCantidadStr.toIntOrNull()
+        if (nuevaCantidad == null) {
             Toast.makeText(requireContext(), "Cantidad inválida", Toast.LENGTH_SHORT).show()
             return
         }
