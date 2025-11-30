@@ -96,9 +96,40 @@ class ItemEditFragment : Fragment() {
         val price = binding.etPrice.text?.toString()?.trim() ?: ""
         val quantity = binding.etQuantity.text?.toString()?.trim() ?: ""
 
-        val nameValid = name.isNotEmpty() && name.length <= 40
-        val priceValid = price.isNotEmpty() && price.matches(Regex("^[0-9]{1,20}$"))
-        val quantityValid = quantity.isNotEmpty() && quantity.matches(Regex("^[0-9]{1,4}$"))
+        var nameValid = true
+        var priceValid = true
+        var quantityValid = true
+
+        // Validaciones Criterios 5-8
+        if (name.isEmpty()) {
+            nameValid = false
+            binding.tilName.error = "El nombre no puede estar vacío"
+        } else if (name.length > 40) {
+            nameValid = false
+            binding.tilName.error = "Máximo 40 caracteres"
+        } else {
+            binding.tilName.error = null
+        }
+
+        if (price.isEmpty()) {
+            priceValid = false
+            binding.tilPrice.error = "El precio no puede estar vacío"
+        } else if (!price.matches(Regex("^[0-9]{1,20}$"))) {
+            priceValid = false
+            binding.tilPrice.error = "Precio inválido (solo números, hasta 20 dígitos)"
+        } else {
+            binding.tilPrice.error = null
+        }
+
+        if (quantity.isEmpty()) {
+            quantityValid = false
+            binding.tilQuantity.error = "La cantidad no puede estar vacía"
+        } else if (!quantity.matches(Regex("^[0-9]{1,4}$"))) {
+            quantityValid = false
+            binding.tilQuantity.error = "Cantidad inválida (solo números, hasta 4 dígitos)"
+        } else {
+            binding.tilQuantity.error = null
+        }
 
         binding.btnEdit.isEnabled = nameValid && priceValid && quantityValid
     }
@@ -117,7 +148,7 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun poblarDatos(producto: Inventory) {
-        binding.tvCode.text = "Id: ${producto.code}"
+        binding.tvCode.text = getString(R.string.label_id, producto.code)
         binding.etName.setText(producto.name)
         binding.etPrice.setText(producto.price.toString())
         binding.etQuantity.setText(producto.quantity.toString())
