@@ -20,6 +20,10 @@ class LoginViewModelTest {
     @get:Rule
     val instantTaskRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+
     private lateinit var viewModel: LoginViewModel
     private val repository = mock(AuthRepository::class.java)
 
