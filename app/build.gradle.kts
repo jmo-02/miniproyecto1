@@ -89,15 +89,23 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.4.0")
 
     // Pruebas
+    // --- TESTING ---
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.12.4")
-    testImplementation("org.mockito:mockito-inline:3.12.4")
-    testImplementation ("org.mockito:mockito-android:3.11.2")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
-    testImplementation ("androidx.arch.core:core-testing:2.2.0")
-    debugImplementation ("org.jacoco:org.jacoco.core:0.8.7")
+
+// Mockito
+    testImplementation("org.mockito:mockito-core:5.3.1")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+
+// Coroutines Test (versión actual)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+// LiveData testing
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+// AndroidX instrumented tests
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
 
 
     testImplementation("junit:junit:4.13.2")
